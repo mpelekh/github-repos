@@ -1,12 +1,10 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
 import { AcceptMiddleware } from './accept.middleware';
+import { RepositoriesModule } from './repositories/repositories.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [RepositoriesModule, ConfigModule.forRoot({ isGlobal: true })],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
