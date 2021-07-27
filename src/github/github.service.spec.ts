@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpModule } from '@nestjs/axios';
+import { ConfigModule } from '@nestjs/config';
 import { GithubService } from './github.service';
 
 describe('GithubService', () => {
@@ -6,6 +8,7 @@ describe('GithubService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [HttpModule, ConfigModule.forRoot()],
       providers: [GithubService],
     }).compile();
 
