@@ -14,7 +14,7 @@ export class AcceptMiddleware implements NestMiddleware {
       default: () => {
         throw new NotAcceptableException({
           status: HttpStatus.NOT_ACCEPTABLE,
-          Message: 'The only accepted content type is "application/json"',
+          Message: 'The only acceptable content type is "application/json"',
         });
       },
     });
