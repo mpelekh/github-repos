@@ -21,7 +21,7 @@ import { Branch, Repository } from '../repositories/entities';
 @Injectable()
 export class GithubService {
   public static BASE_URL = 'https://api.github.com';
-  private static HEADERS = { Accept: 'application/vnd.github.v3+json' };
+  public static HEADERS = { Accept: 'application/vnd.github.v3+json' };
 
   constructor(
     private httpService: HttpService,

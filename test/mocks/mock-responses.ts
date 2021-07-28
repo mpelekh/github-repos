@@ -2,13 +2,22 @@ import { GithubService } from '../../src/github/github.service';
 
 export const mockResponsesByUrl: { [k: string]: any } = {
   [`${GithubService.BASE_URL}/users/username/repos`]: {
-    headers: {},
+    headers: {
+      link: `<${GithubService.BASE_URL}/users/username/repos?page=2>; rel="next", <${GithubService.BASE_URL}/users/username/repos?page=2>; rel="last"`,
+    },
     data: [
       { name: 'repo1', owner: { login: 'login1' }, fork: false },
       { name: 'repo2', owner: { login: 'login2' }, fork: true },
-      { name: 'repo3', owner: { login: 'login3' }, fork: false },
     ],
   },
+
+  [`${GithubService.BASE_URL}/users/username/repos?page=2`]: {
+    headers: {
+      link: `<${GithubService.BASE_URL}/users/username/repos?page=1>; rel="prev", <${GithubService.BASE_URL}/users/username/repos?page=1>; rel="first"`,
+    },
+    data: [{ name: 'repo3', owner: { login: 'login3' }, fork: false }],
+  },
+
   [`${GithubService.BASE_URL}/repos/username/repo1/branches`]: {
     headers: {},
     data: [
