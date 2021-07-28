@@ -59,3 +59,10 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Dockerize an application
+
+```bash
+docker build -t github-repos .
+docker run -p 3000:3000 github-repos
+```
