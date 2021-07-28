@@ -26,7 +26,7 @@ describe('RepositoriesController', () => {
 
   describe('findAll', () => {
     it('should call the githubService.findAllByUserName() method with the appropriate parameter', async () => {
-      await controller.findAll('username');
+      await controller.findAll({ username: 'username' });
 
       expect(githubServiceMockImplementation.findAllByUserName).toBeCalledTimes(
         1,
@@ -36,7 +36,7 @@ describe('RepositoriesController', () => {
       );
     });
     it('should return an array of repositories', async () => {
-      expect(await controller.findAll('username')).toEqual([]);
+      expect(await controller.findAll({ username: 'username' })).toEqual([]);
     });
   });
 });

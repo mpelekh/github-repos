@@ -7,6 +7,8 @@ import {
   expand,
   EMPTY,
   reduce,
+  iif,
+  of,
 } from 'rxjs';
 import * as parseLinkHeader from 'parse-link-header';
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
@@ -56,18 +58,22 @@ export class GithubService {
         reduce((acc, response) => acc.concat(response.data), []),
         map((repos) => repos.filter((repo) => !repo.fork)),
         concatMap((repos) =>
-          forkJoin(
-            repos.map((repo) =>
-              this.fetch<GithubBranch[]>(
-                `${GithubService.BASE_URL}/repos/${userName}/${repo.name}/branches`,
-              ).pipe(
-                map((response) => response.data),
-                map((branches) => this.mapRepository(repo, branches)),
-                catchError((error) => {
-                  throw new Error(error);
-                }),
+          iif(
+            () => Boolean(repos.length),
+            forkJoin(
+              repos.map((repo) =>
+                this.fetch<GithubBranch[]>(
+                  `${GithubService.BASE_URL}/repos/${userName}/${repo.name}/branches`,
+                ).pipe(
+                  map((response) => response.data),
+                  map((branches) => this.mapRepository(repo, branches)),
+                  catchError((error) => {
+                    throw new Error(error);
+                  }),
+                ),
               ),
             ),
+            of([]),
           ),
         ),
       ),

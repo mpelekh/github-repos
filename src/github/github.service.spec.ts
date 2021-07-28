@@ -53,4 +53,28 @@ describe('GithubService', () => {
       { headers },
     );
   });
+
+  it('should return an empty array if user has only forks', async () => {
+    jest.spyOn(httpService, 'get').mockImplementation((url: string) => {
+      return of(mockResponsesByUrl[url]);
+    });
+
+    const result = await githubService.findAllByUserName(
+      'username_with_forks_only',
+    );
+
+    expect(result).toStrictEqual([]);
+  });
+
+  it("should return an empty array if user hasn't any repo", async () => {
+    jest.spyOn(httpService, 'get').mockImplementation((url: string) => {
+      return of(mockResponsesByUrl[url]);
+    });
+
+    const result = await githubService.findAllByUserName(
+      'username_without_any_repo',
+    );
+
+    expect(result).toStrictEqual([]);
+  });
 });
