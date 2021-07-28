@@ -1,4 +1,5 @@
 import {
+  HttpStatus,
   Injectable,
   NestMiddleware,
   NotAcceptableException,
@@ -11,7 +12,10 @@ export class AcceptMiddleware implements NestMiddleware {
     res.format({
       json: () => next(),
       default: () => {
-        throw new NotAcceptableException();
+        throw new NotAcceptableException({
+          status: HttpStatus.NOT_ACCEPTABLE,
+          Message: 'The only accepted content type is "application/json"',
+        });
       },
     });
   }
