@@ -18,6 +18,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Repository'
+        '400':
+          description: The provided username is invalid
         '404':
           description: The user with provided username doesn't exist
         '406':
