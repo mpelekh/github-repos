@@ -1,0 +1,62 @@
+openapi: 3.0.0
+paths:
+  '/users/{username}/repos':
+    get:
+      operationId: RepositoriesController_findAll
+      parameters:
+        - name: username
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retrieved user's repositories successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Repository'
+        '404':
+          description: The user with provided username doesn't exist
+        '406':
+          description: The only acceptable content type is "application/json"
+        '500':
+          description: Internal server error
+      tags:
+        - repos
+info:
+  title: github-repos
+  description: The github-repos API description
+  version: 0.0.1
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    Branch:
+      type: object
+      properties:
+        name:
+          type: string
+        lastCommitSha:
+          type: string
+      required:
+        - name
+        - lastCommitSha
+    Repository:
+      type: object
+      properties:
+        name:
+          type: string
+        owner:
+          type: string
+        branches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Branch'
+      required:
+        - name
+        - owner
+        - branches
