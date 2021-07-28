@@ -9,7 +9,7 @@ import {
   reduce,
 } from 'rxjs';
 import * as parseLinkHeader from 'parse-link-header';
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -33,9 +33,25 @@ export class GithubService {
       this.fetch<GithubRepository[]>(
         `${GithubService.BASE_URL}/users/${userName}/repos`,
       ).pipe(
+        catchError((error) => {
+          if (error.response?.status === HttpStatus.NOT_FOUND) {
+            throw new NotFoundException({
+              status: HttpStatus.NOT_FOUND,
+              Message: `The user with "${userName}" username doesn't exist`,
+            });
+          }
+
+          throw new Error(error);
+        }),
         expand((response) => {
-          const next = parseLinkHeader(response.headers.link).next;
-          return next ? this.fetch<GithubRepository[]>(next.url) : EMPTY;
+          const next = parseLinkHeader(response.headers.link)?.next;
+          return next
+            ? this.fetch<GithubRepository[]>(next.url).pipe(
+                catchError((error) => {
+                  throw new Error(error);
+                }),
+              )
+            : EMPTY;
         }),
         reduce((acc, response) => acc.concat(response.data), []),
         map((repos) => repos.filter((repo) => !repo.fork)),
@@ -47,13 +63,13 @@ export class GithubService {
               ).pipe(
                 map((response) => response.data),
                 map((branches) => this.mapRepository(repo, branches)),
+                catchError((error) => {
+                  throw new Error(error);
+                }),
               ),
             ),
           ),
         ),
-        catchError((error) => {
-          throw new HttpException(error.response?.data, error.response?.status);
-        }),
       ),
     );
   }
